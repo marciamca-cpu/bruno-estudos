@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Ciências 2ª Prova — Bruno</title>
+<style>
+  :root {
+    --roxo: #6a11cb;
+    --azul: #2575fc;
+    --verde: #2e7d32;
+    --vermelho: #c62828;
+    --laranja: #e65100;
+    --amarelo: #f9a825;
+    --ciano: #006064;
+    --roxo-claro: #a78bfa;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f0f23; color: #eee; min-height: 100vh; overflow-x: hidden; }
+
+  /* ===== TELA INICIAL ===== */
+  #tela-inicio {
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #0f0f23 100%);
+    padding: 30px 20px; text-align: center;
+  }
+  .logo { font-size: 4em; margin-bottom: 16px; animation: float 3s ease-in-out infinite; }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+  #tela-inicio h1 { font-size: 1.8em; background: linear-gradient(135deg, #a78bfa, #60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
+  #tela-inicio p { color: #aaa; margin-bottom: 30px; font-size: 0.95em; }
+  .topicos-lista { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+  .topico-item { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; text-align: left; }
+  .topico-item .num { background: var(--roxo); color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 0.8em; font-weight: bold; flex-shrink: 0; }
+  .topico-item span { font-size: 0.9em; }
+  .btn-start { background: linear-gradient(135deg, var(--roxo), var(--azul)); color: white; border: none; padding: 16px 40px; border-radius: 50px; font-size: 1.1em; font-weight: bold; cursor: pointer; width: 100%; max-width: 300px; transition: transform 0.15s, box-shadow 0.15s; box-shadow: 0 4px 20px rgba(106,17,203,0.4); }
+  .btn-start:active { transform: scale(0.97); }
+
+  /* ===== LAYOUT PRINCIPAL ===== */
+  #app { display: none; min-height: 100vh; flex-direction: column; }
+
+  /* BARRA TOPO */
+  .topo { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); padding: 12px 16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .btn-voltar { background: rgba(255,255,255,0.1); border: none; color: white; width: 36px; height: 36px; border-radius: 50%; font-size: 1.1em; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .topo-info { flex: 1; }
+  .topo-info h3 { font-size: 0.88em; color: #ccc; }
+  .topo-info .topico-nome { font-size: 1em; font-weight: bold; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .progresso-bar { height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+  .progresso-fill { height: 100%; background: linear-gradient(90deg, var(--roxo), var(--azul)); border-radius: 2px; transition: width 0.5s ease; }
+
+  /* ===== CONTEÚDO ===== */
+  .conteudo { flex: 1; padding: 16px; max-width: 600px; margin: 0 auto; width: 100%; }
+
+  /* CARD CONTEÚDO */
+  .card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 20px; margin-bottom: 16px; }
+  .card h2 { font-size: 1.2em; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .card p { font-size: 0.92em; line-height: 1.7; color: #ddd; margin-bottom: 10px; }
+  .card ul { padding-left: 20px; }
+  .card ul li { font-size: 0.9em; line-height: 1.7; color: #ddd; margin-bottom: 4px; }
+
+  .destaque-box { background: rgba(106,17,203,0.2); border-left: 4px solid var(--roxo-claro); border-radius: 0 10px 10px 0; padding: 12px 14px; margin: 12px 0; font-size: 0.88em; }
+  .destaque-box.verde { background: rgba(46,125,50,0.2); border-color: #81c784; }
+  .destaque-box.vermelho { background: rgba(198,40,40,0.2); border-color: #ef9a9a; }
+  .destaque-box.laranja { background: rgba(230,81,0,0.2); border-color: #ffcc80; }
+  .destaque-box.amarelo { background: rgba(249,168,37,0.2); border-color: #ffe082; }
+  .destaque-box strong { display: block; margin-bottom: 4px; font-size: 0.95em; }
+
+  .sequencia { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; margin: 10px 0; }
+  .seq-item { background: var(--roxo); color: white; padding: 4px 10px; border-radius: 14px; font-size: 0.78em; font-weight: bold; }
+  .seq-seta { color: #888; font-size: 1em; }
+
+  .mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0; }
+  .mini-card { background: rgba(255,255,255,0.06); border-radius: 10px; padding: 12px; font-size: 0.82em; line-height: 1.5; }
+  .mini-card strong { display: block; margin-bottom: 4px; font-size: 0.9em; }
+
+  .tabela-scroll { overflow-x: auto; margin: 12px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.82em; min-width: 300px; }
+  th { background: rgba(106,17,203,0.5); color: white; padding: 8px 10px; text-align: left; }
+  td { padding: 7px 10px; border-bottom: 1px solid rgba(255,255,255,0.06); color: #ddd; }
+  tr:nth-child(even) td { background: rgba(255,255,255,0.03); }
+
+  .btn-quiz { background: linear-gradient(135deg, var(--roxo), var(--azul)); border: none; color: white; padding: 14px 24px; border-radius: 50px; font-size: 1em; font-weight: bold; cursor: pointer; width: 100%; margin: 10px 0; transition: transform 0.15s; box-shadow: 0 4px 16px rgba(106,17,203,0.3); }
+  .btn-quiz:active { transform: scale(0.97); }
+
+  /* ===== QUIZ ===== */
+  #tela-quiz { display: none; min-height: 100vh; flex-direction: column; background: #0f0f23; }
+  .quiz-topo { background: rgba(255,255,255,0.05); padding: 14px 16px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .quiz-progress { background: rgba(255,255,255,0.1); border-radius: 20px; padding: 4px 14px; font-size: 0.8em; color: #aaa; }
+  .quiz-body { flex: 1; padding: 20px 16px; max-width: 600px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; }
+
+  .quiz-num { font-size: 0.78em; color: var(--roxo-claro); font-weight: bold; margin-bottom: 8px; }
+  .quiz-pergunta { font-size: 1.05em; font-weight: bold; line-height: 1.5; margin-bottom: 20px; color: white; }
+
+  .opcoes { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+  .opcao { background: rgba(255,255,255,0.06); border: 2px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 16px; font-size: 0.92em; cursor: pointer; transition: all 0.2s; text-align: left; color: #eee; display: flex; align-items: flex-start; gap: 10px; }
+  .opcao:active { transform: scale(0.98); }
+  .opcao .letra { background: rgba(255,255,255,0.1); border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85em; flex-shrink: 0; }
+  .opcao.certa { background: rgba(46,125,50,0.3); border-color: #81c784; animation: pulse-green 0.4s ease; }
+  .opcao.errada { background: rgba(198,40,40,0.2); border-color: #ef9a9a; animation: shake 0.4s ease; }
+  .opcao.desativada { pointer-events: none; opacity: 0.5; }
+  .opcao.certa .letra { background: #2e7d32; color: white; }
+  .opcao.errada .letra { background: #c62828; color: white; }
+
+  @keyframes shake {
+    0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-6px)} 80%{transform:translateX(6px)}
+  }
+  @keyframes pulse-green {
+    0%{transform:scale(1)} 50%{transform:scale(1.02)} 100%{transform:scale(1)}
+  }
+
+  /* FEEDBACK */
+  .feedback { border-radius: 14px; padding: 16px; margin: 8px 0 14px; display: none; animation: fadeIn 0.3s ease; font-size: 0.9em; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  .feedback.certo { background: rgba(46,125,50,0.25); border: 2px solid #81c784; display: block; }
+  .feedback.errado { background: rgba(198,40,40,0.2); border: 2px solid #ef9a9a; display: block; }
+  .feedback-emoji { font-size: 2em; margin-bottom: 6px; display: block; }
+  .feedback h4 { font-size: 1em; margin-bottom: 6px; }
+  .feedback p { font-size: 0.88em; line-height: 1.5; color: #ddd; }
+  .btn-tentar { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px 20px; border-radius: 20px; font-size: 0.88em; cursor: pointer; margin-top: 10px; }
+  .btn-prox { background: linear-gradient(135deg, var(--verde), #43a047); border: none; color: white; padding: 12px 28px; border-radius: 50px; font-size: 0.95em; font-weight: bold; cursor: pointer; margin-top: 10px; display: none; }
+
+  /* ===== TELA RESULTADO TOPICO ===== */
+  #tela-resultado-topico { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 30px 20px; text-align: center; background: #0f0f23; }
+  .resultado-emoji { font-size: 4.5em; margin-bottom: 16px; animation: float 2s ease-in-out infinite; }
+  .resultado-titulo { font-size: 1.6em; font-weight: bold; margin-bottom: 8px; }
+  .resultado-score { font-size: 1.1em; color: #aaa; margin-bottom: 20px; }
+  .score-bar { width: 200px; height: 12px; background: rgba(255,255,255,0.1); border-radius: 6px; margin: 0 auto 24px; overflow: hidden; }
+  .score-fill { height: 100%; border-radius: 6px; transition: width 1s ease; }
+  .btn-continuar { background: linear-gradient(135deg, var(--roxo), var(--azul)); border: none; color: white; padding: 16px 36px; border-radius: 50px; font-size: 1.05em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 20px rgba(106,17,203,0.4); }
+
+  /* ===== TELA FINAL ===== */
+  #tela-final { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 30px 20px; text-align: center; background: linear-gradient(135deg, #0f0f23, #1a1a3e); }
+  .confete { font-size: 3em; animation: float 2s ease-in-out infinite; margin-bottom: 16px; }
+  #tela-final h1 { font-size: 1.8em; background: linear-gradient(135deg, #ffd700, #ff9f00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
+  .final-score { font-size: 3em; font-weight: bold; color: #ffd700; margin: 10px 0; }
+  .final-msg { color: #aaa; font-size: 0.95em; margin-bottom: 28px; line-height: 1.6; }
+  .btn-reiniciar { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 14px 30px; border-radius: 50px; font-size: 0.95em; cursor: pointer; }
+
+  /* ESTRELAS */
+  .estrelas { font-size: 2em; margin: 10px 0; }
+
+  /* NAV TOPICOS */
+  .nav-topicos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 16px 0; }
+  .nav-topico-btn { background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 8px 4px; font-size: 1.4em; cursor: pointer; transition: all 0.2s; text-align: center; }
+  .nav-topico-btn.concluido { border-color: var(--verde); background: rgba(46,125,50,0.2); }
+  .nav-topico-btn.atual { border-color: var(--roxo-claro); background: rgba(106,17,203,0.2); }
+</style>
+</head>
+<body>
+
+<!-- ===== TELA INICIAL ===== -->
+<div id="tela-inicio">
+  <div class="logo">🔬</div>
+  <h1>Ciências · 2ª Prova</h1>
+  <p>Estuda o conteúdo e responde o quiz de cada assunto!</p>
+
+  <div class="topicos-lista">
+    <div class="topico-item"><div class="num">1</div><span>👦 Sistema Genital Masculino</span></div>
+    <div class="topico-item"><div class="num">2</div><span>👧 Sistema Genital Feminino</span></div>
+    <div class="topico-item"><div class="num">3</div><span>📅 Ciclo Menstrual e Hormônios</span></div>
+    <div class="topico-item"><div class="num">4</div><span>🤰 Gravidez e Parto</span></div>
+    <div class="topico-item"><div class="num">5</div><span>🌱 Puberdade</span></div>
+    <div class="topico-item"><div class="num">6</div><span>🛡️ Métodos Contraceptivos</span></div>
+    <div class="topico-item"><div class="num">7</div><span>💗 Sexualidade e ISTs</span></div>
+  </div>
+
+  <button class="btn-start" onclick="iniciar()">🚀 COMEÇAR AGORA</button>
+</div>
+
+<!-- ===== APP PRINCIPAL ===== -->
+<div id="app" style="display:none; flex-direction:column; min-height:100vh;">
+  <div class="topo">
+    <button class="btn-voltar" onclick="voltarInicio()">←</button>
+    <div class="topo-info">
+      <div class="topo-info h3" id="topo-subtitulo" style="font-size:0.78em;color:#aaa;">Tópico</div>
+      <div class="topico-nome" id="topo-titulo">Carregando...</div>
+    </div>
+    <div style="font-size:0.8em;color:#aaa;" id="topo-progresso">1/7</div>
+  </div>
+  <div class="progresso-bar" style="margin:0 16px;">
+    <div class="progresso-fill" id="barra-progresso" style="width:0%"></div>
+  </div>
+
+  <div class="conteudo" id="conteudo-topico"></div>
+</div>
+
+<!-- ===== QUIZ ===== -->
+<div id="tela-quiz" style="display:none; flex-direction:column; min-height:100vh;">
+  <div class="quiz-topo">
+    <button class="btn-voltar" onclick="voltarConteudo()">←</button>
+    <div style="flex:1;">
+      <div style="font-size:0.8em;color:#aaa;" id="quiz-topico-nome">Quiz</div>
+      <div style="font-size:0.88em;font-weight:bold;" id="quiz-titulo-topo">Questão</div>
+    </div>
+    <div class="quiz-progress" id="quiz-progresso">1/4</div>
+  </div>
+  <div class="progresso-bar" style="margin:0 12px;">
+    <div class="progresso-fill" id="quiz-barra" style="width:0%"></div>
+  </div>
+
+  <div class="quiz-body">
+    <div class="quiz-num" id="quiz-num">Questão 1</div>
+    <div class="quiz-pergunta" id="quiz-pergunta">Pergunta aqui</div>
+    <div class="opcoes" id="quiz-opcoes"></div>
+    <div class="feedback" id="quiz-feedback">
+      <span class="feedback-emoji" id="fb-emoji"></span>
+      <h4 id="fb-titulo"></h4>
+      <p id="fb-texto"></p>
+      <button class="btn-tentar" id="btn-tentar" onclick="tentarNovamente()">🔄 Tentar de novo</button>
+      <button class="btn-prox" id="btn-prox" onclick="proximaQuestao()">Próxima →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== RESULTADO TÓPICO ===== -->
+<div id="tela-resultado-topico" style="display:none; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:30px 20px; text-align:center; background:#0f0f23;">
+  <div class="resultado-emoji" id="res-emoji">🎉</div>
+  <div class="resultado-titulo" id="res-titulo">Muito bem!</div>
+  <div class="resultado-score" id="res-score">4 de 4 acertos</div>
+  <div class="estrelas" id="res-estrelas">⭐⭐⭐</div>
+  <div class="score-bar"><div class="score-fill" id="res-barra" style="width:0%"></div></div>
+  <p style="color:#aaa;font-size:0.9em;margin-bottom:24px;" id="res-msg">Arrasoooou!</p>
+  <button class="btn-continuar" id="btn-continuar" onclick="proximoTopico()">Próximo assunto →</button>
+</div>
+
+<!-- ===== TELA FINAL ===== -->
+<div id="tela-final" style="display:none; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:30px 20px; text-align:center; background:linear-gradient(135deg,#0f0f23,#1a1a3e);">
+  <div class="confete">🏆</div>
+  <h1>MISSÃO CUMPRIDA!</h1>
+  <p style="color:#aaa;margin-bottom:8px;">Pontuação final:</p>
+  <div class="final-score" id="final-score">0/28</div>
+  <div class="estrelas" id="final-estrelas">⭐⭐⭐</div>
+  <p class="final-msg" id="final-msg">Você está pronto para a prova!</p>
+  <button class="btn-continuar" onclick="voltarInicio()" style="margin-bottom:12px;">🏠 Início</button>
+  <button class="btn-reiniciar" onclick="reiniciar()">🔄 Recomeçar do zero</button>
+</div>
+
+<script>
+// ===========================
+// DADOS — TÓPICOS E QUIZZES
+// ===========================
+const topicos = [
+
+// ======= TOPICO 1 =======
+{
+  id: 1,
+  emoji: '👦',
+  cor: '#1565C0',
+  titulo: 'Sistema Genital Masculino',
+  conteudo: `
+    <div class="card">
+      <h2 style="color:#64b5f6">👦 Sistema Genital Masculino</h2>
+      <p>O sistema genital masculino tem <strong>duas funções principais</strong>: produzir espermatozoides e produzir testosterona (hormônio masculino).</p>
+      <div class="destaque-box">
+        <strong>🌡️ Por que fora do corpo?</strong>
+        Os testículos ficam na <strong>bolsa escrotal</strong> (fora do abdômen) porque os espermatozoides precisam de temperatura <strong>menor que a corporal (~35°C)</strong>. Dentro do corpo ficaria quente demais!
+      </div>
+    </div>
+    <div class="card">
+      <h2 style="color:#64b5f6">🗺️ Caminho do Espermatozoide</h2>
+      <div class="sequencia">
+        <span class="seq-item">🥚 Testículo</span><span class="seq-seta">→</span>
+        <span class="seq-item">🌀 Epidídimo</span><span class="seq-seta">→</span>
+        <span class="seq-item">➡️ Ducto Deferente</span><span class="seq-seta">→</span>
+        <span class="seq-item">💧 Glândulas</span><span class="seq-seta">→</span>
+        <span class="seq-item">🚿 Uretra</span>
+      </div>
+      <div class="tabela-scroll">
+        <table>
+          <tr><th>Órgão</th><th>Função</th></tr>
+          <tr><td>🥚 Testículos</td><td>Produzem espermatozoides nos <strong>túbulos seminíferos</strong> e testosterona</td></tr>
+          <tr><td>🌀 Epidídimo</td><td><strong>Maturação e armazenamento</strong> dos espermatozoides</td></tr>
+          <tr><td>➡️ Ducto Deferente</td><td>Transporta os espermatozoides até a uretra</td></tr>
+          <tr><td>💧 Glândulas</td><td>Seminal (energia), Próstata (neutraliza acidez), Bulbouretral (lubrifica)</td></tr>
+          <tr><td>🚿 Uretra</td><td>Saída de sêmen ou urina — nunca ao mesmo tempo!</td></tr>
+        </table>
+      </div>
+      <div class="destaque-box amarelo">
+        <strong>🧠 MACETE para não esquecer:</strong>
+        "Tiago Estuda Direito Ganhando Universidade"<br>
+        <strong>T</strong>estículo → <strong>E</strong>pidídimo → <strong>D</strong>ucto → <strong>G</strong>lândulas → <strong>U</strong>retra
+      </div>
+    </div>
+    <div class="card">
+      <h2 style="color:#64b5f6">🏊 O Espermatozoide</h2>
+      <div class="mini-grid">
+        <div class="mini-card"><strong>🔵 Cabeça</strong>Contém o núcleo com o DNA (informação genética)</div>
+        <div class="mini-card"><strong>⚡ Peça Intermediária</strong>Mitocôndrias que fornecem energia para nadar</div>
+        <div class="mini-card" style="grid-column:span 2"><strong>🌀 Cauda (flagelo)</strong>Responsável pelo movimento de natação até o óvulo</div>
+      </div>
+    </div>
+  `,
+  questoes: [
+    {
+      p: 'Onde os espermatozoides são produzidos dentro dos testículos?',
+      ops: ['Epidídimo', 'Túbulos seminíferos', 'Ducto deferente', 'Glândula seminal'],
+      c: 1,
+      exp: 'Os espermatozoides são produzidos nos TÚBULOS SEMINÍFEROS — tubinhos microscópicos dentro dos testículos. O epidídimo vem depois, para maturação!'
+    },
+    {
+      p: 'Por que os testículos ficam fora do corpo, na bolsa escrotal?',
+      ops: ['Para facilitar a ejaculação', 'Porque precisam de temperatura menor que a corporal', 'Para produzir mais testosterona', 'Para proteger os espermatozoides de impactos'],
+      c: 1,
+      exp: 'Espermatozoides precisam de ~35°C para se desenvolver. O interior do corpo tem ~37°C — quente demais! Por isso a bolsa escrotal fica do lado de fora!'
+    },
+    {
+      p: 'Qual é a função do epidídimo?',
+      ops: ['Produzir testosterona', 'Transportar urina', 'Maturação e armazenamento dos espermatozoides', 'Neutralizar a acidez do sêmen'],
+      c: 2,
+      exp: 'O epidídimo é o "depósito" dos espermatozoides. Eles ficam lá amadurecendo até a ejaculação. Macete: Epidídimo = Estoque!'
+    },
+    {
+      p: 'Na ordem correta, o caminho do espermatozoide é:',
+      ops: ['Testículo → Uretra → Epidídimo → Ducto', 'Epidídimo → Testículo → Ducto → Uretra', 'Testículo → Epidídimo → Ducto Deferente → Uretra', 'Ducto → Epidídimo → Testículo → Uretra'],
+      c: 2,
+      exp: 'CORRETO! Testículo → Epidídimo → Ducto Deferente → Glândulas → Uretra.\nMacete: "Tiago Estuda Direito Ganhando Universidade" 🎓'
+    }
+  ]
+},
+
+// ======= TOPICO 2 =======
+{
+  id: 2,
+  emoji: '👧',
+  cor: '#C62828',
+  titulo: 'Sistema Genital Feminino',
+  conteudo: `
+    <div class="card">
+      <h2 style="color:#f48fb1">👧 Sistema Genital Feminino</h2>
+      <p>O sistema genital feminino produz óvulos (gametas femininos), hormônios femininos, e é onde o bebê se desenvolve durante a gravidez.</p>
+      <div class="destaque-box vermelho">
+        <strong>⚠️ Atenção — isso cai muito na prova!</strong>
+        Fecundação = TUBA UTERINA (não no útero!)<br>
+        Implantação = ENDOMÉTRIO (dentro do útero)
+      </div>
+    </div>
+    <div class="card">
+      <h2 style="color:#f48fb1">🗺️ Órgãos e Funções</h2>
+      <div class="tabela-scroll">
+        <table>
+          <tr><th>Órgão</th><th>Função principal</th></tr>
+          <tr><td>🫒 Ovários</td><td>Produzem óvulos, estrógeno e progesterona (gônadas femininas)</td></tr>
+          <tr><td>🌉 Tubas Uterinas</td><td><strong>LOCAL DA FECUNDAÇÃO</strong> — conduzem o óvulo até o útero</td></tr>
+          <tr><td>🏠 Útero</td><td>Onde o embrião se implanta e se desenvolve</td></tr>
+          <tr><td>🩸 Endométrio</td><td>Camada interna do útero — espessa para receber embrião ou descama (menstruação)</td></tr>
+          <tr><td>💪 Miométrio</td><td>Camada muscular do útero — faz contrações no parto</td></tr>
+          <tr><td>🚪 Vagina</td><td>Canal do parto; recebe o pênis na relação sexual</td></tr>
+          <tr><td>🌸 Vulva</td><td>Genitália externa: lábios maiores, menores e clitóris</td></tr>
+          <tr><td>Hímen</td><td>Dobra de pele na entrada da vagina</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <h2 style="color:#f48fb1">🫒 Os Ovários e os Folículos</h2>
+      <p>Os óvulos ficam dentro dos ovários em estruturas chamadas <strong>folículos</strong>. A cada ciclo menstrual, um folículo cresce, amadurece e libera o óvulo — isso se chama <strong>ovulação</strong>!</p>
+      <div class="destaque-box">
+        <strong>💡 Analogia:</strong>
+        Pensa assim: os ovários são como uma "caixa de ovos". A cada mês, um ovo (folículo) cresce, abre e libera o óvulo para a tuba uterina.
+      </div>
+    </div>
+  `,
+  questoes: [
+    {
+      p: 'Onde ocorre NORMALMENTE a fecundação no sistema feminino?',
+      ops: ['No ovário', 'No útero', 'Na vagina', 'Na tuba uterina (trompa)'],
+      c: 3,
+      exp: 'A fecundação ocorre na TUBA UTERINA! O espermatozoide nada até encontrar o óvulo lá dentro. Depois, o zigoto formado viaja até o útero para se implantar no endométrio.'
+    },
+    {
+      p: 'O endométrio é a camada interna do útero. O que acontece com ele quando não há gravidez?',
+      ops: ['Ele produz mais estrógeno', 'Ele descama — isso é a menstruação!', 'Ele vira a placenta', 'Ele se transforma em miométrio'],
+      c: 1,
+      exp: 'Exato! Quando não há gravidez, o endométrio descama e sai junto com sangue — isso é a MENSTRUAÇÃO! O corpo "limpa a casa" para começar um novo ciclo.'
+    },
+    {
+      p: 'Qual dessas estruturas NÃO faz parte da vulva (genitália externa feminina)?',
+      ops: ['Lábios maiores', 'Endométrio', 'Clitóris', 'Lábios menores'],
+      c: 1,
+      exp: 'O ENDOMÉTRIO é interno — é a camada de dentro do útero! A vulva é a parte externa: lábios maiores, lábios menores, clitóris e orifícios de saída.'
+    },
+    {
+      p: 'Qual é a função das tubas uterinas?',
+      ops: ['Produzir os óvulos', 'Conduzir o óvulo e ser o local da fecundação', 'Armazenar os hormônios femininos', 'Ser o canal do parto'],
+      c: 1,
+      exp: 'As tubas uterinas (trompas) têm cilínhos que empurram o óvulo do ovário até o útero. E é nesse caminho que o espermatozoide encontra o óvulo — FECUNDAÇÃO na tuba!'
+    }
+  ]
+},
+
+// ======= TOPICO 3 =======
+{
+  id: 3,
+  emoji: '📅',
+  cor: '#2E7D32',
+  titulo: 'Ciclo Menstrual e Hormônios',
+  conteudo: `
+    <div class="card">
+      <h2 style="color:#81c784">📅 O Ciclo Menstrual</h2>
+      <p>O ciclo menstrual prepara o corpo feminino para uma possível gravidez todo mês. Dura em média <strong>28 dias</strong>, mas pode variar de pessoa para pessoa.</p>
+      <p>O <strong>Dia 1</strong> do ciclo é o <strong>primeiro dia da menstruação</strong>.</p>
+    </div>
+    <div class="card">
+      <h2 style="color:#81c784">🔄 As 4 Fases do Ciclo</h2>
+      <div class="mini-grid">
+        <div class="mini-card" style="border-left:3px solid #1976d2">
+          <strong style="color:#64b5f6">🔵 Fase 1 — Proliferativa (dias 1–14)</strong>
+          Hormônio: <strong>Estrógeno</strong><br>
+          O endométrio começa a espessar.<br>
+          O folículo cresce estimulado pelo <strong>FSH</strong>.
+        </div>
+        <div class="mini-card" style="border-left:3px solid #f57c00">
+          <strong style="color:#ffb74d">🟠 Ovulação (~dia 14)</strong>
+          Hormônio: <strong>LH</strong> (pico alto!)<br>
+          O folículo ROMPE e libera o óvulo.<br>
+          É o <strong>período fértil</strong>!
+        </div>
+        <div class="mini-card" style="border-left:3px solid #c62828">
+          <strong style="color:#ef9a9a">🔴 Fase 2 — Lútea (dias 14–28)</strong>
+          Hormônio: <strong>Progesterona</strong><br>
+          Corpo lúteo ativo.<br>
+          Endométrio fica mais espesso.
+        </div>
+        <div class="mini-card" style="border-left:3px solid #9c27b0">
+          <strong style="color:#ce93d8">🟣 Sem gravidez →</strong>
+          Corpo lúteo degenera.<br>
+          Progesterona cai.<br>
+          <strong>Menstruação!</strong>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2 style="color:#81c784">🧪 Os 4 Hormônios</h2>
+      <div class="tabela-scroll">
+        <table>
+          <tr><th>Hormônio</th><th>Produzido por</th><th>Função</th></tr>
+          <tr><td>FSH</td><td>Hipófise</td><td>Estimula o folículo a crescer</td></tr>
+          <tr><td>LH</td><td>Hipófise</td><td>Desencadeia a <strong>ovulação</strong></td></tr>
+          <tr><td>Estrógeno</td><td>Folículo/Ovários</td><td>Espessa o endométrio (fase 1)</td></tr>
+          <tr><td>Progesterona</td><td>Corpo Lúteo</td><td>Mantém o endométrio (fase 2)</td></tr>
+        </table>
+      </div>
+      <div class="destaque-box amarelo">
+        <strong>🧠 MACETE dos hormônios:</strong>
+        "Feliz Leão Está Programado"<br>
+        <strong>F</strong>SH → <strong>L</strong>H → <strong>E</strong>strógeno → <strong>P</strong>rogesterona
+      </div>
+    </div>
+    <div class="card">
+      <h2 style="color:#81c784">📌 O Corpo Lúteo</h2>
+      <p>Após a ovulação, os restos do folículo que se rompeu formam o <strong>corpo lúteo</strong>. Ele produz <strong>progesterona</strong> para manter o endométrio preparado para o embrião.</p>
+      <p>Se não houver gravidez → corpo lúteo degenera → progesterona cai → <strong>menstruação</strong>.</p>
+      <div class="destaque-box verde">
+        <strong>🩸 Menarca</strong> = primeira menstruação da vida de uma menina. Marca o início da fase reprodutiva!
+      </div>
+    </div>
+  `,
+  questoes: [
+    {
+      p: 'Qual hormônio causa a ovulação (ruptura do folículo e liberação do óvulo)?',
+      ops: ['Estrógeno', 'Progesterona', 'FSH', 'LH'],
+      c: 3,
+      exp: 'O LH (Hormônio Luteinizante), produzido pela hipófise, tem um PICO por volta do dia 14 e é esse pico que causa a ruptura do folículo e libera o óvulo — a ovulação!'
+    },
+    {
+      p: 'O que é o "corpo lúteo" e o que ele produz?',
+      ops: ['É o óvulo liberado; produz estrógeno', 'São os restos do folículo após a ovulação; produz progesterona', 'É uma glândula do cérebro; produz FSH', 'É o endométrio espessado; produz LH'],
+      c: 1,
+      exp: 'Após a ovulação, o folículo que se rompeu vira o CORPO LÚTEO, que produz PROGESTERONA para manter o endométrio preparado. Se não vem gravidez, o corpo lúteo some e vem a menstruação!'
+    },
+    {
+      p: 'A menstruação ocorre porque:',
+      ops: ['O estrógeno aumenta demais', 'O corpo lúteo degenera, a progesterona cai e o endométrio descama', 'O óvulo foi fecundado', 'A hipófise para de funcionar'],
+      c: 1,
+      exp: 'Sem fecundação → corpo lúteo degenera → progesterona cai → endométrio não tem suporte → DESCAMA = menstruação! É o corpo se "preparando" para o próximo ciclo.'
+    },
+    {
+      p: 'Qual é a ordem correta dos hormônios no ciclo?',
+      ops: ['Progesterona → LH → FSH → Estrógeno', 'FSH → LH → Estrógeno → Progesterona', 'LH → FSH → Progesterona → Estrógeno', 'Estrógeno → Progesterona → FSH → LH'],
+      c: 1,
+      exp: 'FSH → LH → Estrógeno → Progesterona!\nMacete: "Feliz Leão Está Programado" 🦁'
+    }
+  ]
+},
+
+// ======= TOPICO 4 =======
+{
+  id: 4,
+  emoji: '🤰',
+  cor: '#E65100',
+  titulo: 'Gravidez e Parto',
+  conteudo: `
+    <div class="card">
+      <h2 style="color:#ffb74d">🤰 Como começa a gravidez?</h2>
+      <p>A gravidez começa com a <strong>fecundação</strong> — quando o espermatozoide encontra o óvulo na <strong>tuba uterina</strong> e formam o <strong>zigoto</strong>.</p>
+      <div class="sequencia">
+        <span class="seq-item">💥 Fecundação</span><span class="seq-seta">→</span>
+        <span class="seq-item">Zigoto</span><span class="seq-seta">→</span>
+        <span class="seq-item">Divisões</span><span class="seq-seta">→</span>
+        <span class="seq-item">Mórula</span><span class="seq-seta">→</span>
+        <span class="seq-item">🏠 Implantação</span><span class="seq-seta">→</span>
+        <span class="seq-item">👶 Embrião</span><span class="seq-seta">→</span>
+        <span class="seq-item">Feto</span>
+      </div>
+      <div class="destaque-box laranja">
+        <strong>📌 Datas importantes:</strong>
+        • Implantação no endométrio: 6–7 dias após a fecundação<br>
+        • Embrião: até a 8ª semana<br>
+        • Feto: a partir da 9ª semana<br>
+        • Duração da gravidez: ~40 semanas (9 meses)
+      </div>
+    </div>
+    <div class="card">
+      <h2 style="color:#ffb74d">🧪 Estruturas da Gravidez</h2>
+      <div class="tabela-scroll">
+        <table>
+          <tr><th>Estrutura</th><th>Função</th></tr>
+          <tr><td>🧪 hCG</td><td>Hormônio produzido pelo embrião. Detectado no <strong>teste de gravidez</strong>!</td></tr>
+          <tr><td>🫀 Placenta</td><td>Troca de nutrientes, O₂ e CO₂ entre mãe e feto (pelo cordão umbilical)</td></tr>
+          <tr><td>🌊 Líquido amniótico</td><td>Protege o feto de impactos e mantém temperatura</td></tr>
+          <tr><td>📋 Pré-natal</td><td>Acompanhamento médico durante a gravidez — essencial para saúde!</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <h2 style="color:#ffb74d">🍼 As 3 Etapas do Parto</h2>
+      <div class="sequencia">
+        <span class="seq-item">① Dilatação</span><span class="seq-seta">→</span>
+        <span class="seq-item">② Expulsão</span><span class="seq-seta">→</span>
+        <span class="seq-item">③ Dequitação</span>
+      </div>
+      <ul style="margin-top:10px">
+        <li><strong>Dilatação:</strong> colo do útero abre até 10 cm, contrações, bolsa d'água rompe</li>
+        <li><strong>Expulsão:</strong> nascimento do bebê (parto normal ou cesárea)</li>
+        <li><strong>Dequitação:</strong> saída da placenta após o bebê nascer</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2 style="color:#ffb74d">👥 Tipos de Gêmeos</h2>
+      <div class="mini-grid">
+        <div class="mini-card" style="border-left:3px solid #1976d2">
+          <strong>🧬 Monozigóticos (Idênticos)</strong>
+          1 zigoto se divide em 2.<br>
+          DNA idêntico.<br>
+          Sempre mesmo sexo.<br>
+          <em>MONO = 1</em>
+        </div>
+        <div class="mini-card" style="border-left:3px solid #c62828">
+          <strong>👫 Dizigóticos (Fraternos)</strong>
+          2 óvulos + 2 espermatozoides.<br>
+          DNA diferente.<br>
+          Podem ter sexos diferentes.<br>
+          <em>DI = 2</em>
+        </div>
+      </div>
+    </div>
+  `,
+  questoes: [
+    {
+      p: 'O teste de gravidez detecta qual hormônio?',
+      ops: ['Estrógeno', 'Progesterona', 'hCG', 'FSH'],
+      c: 2,
+      exp: 'O teste detecta o hCG (gonadotrofina coriônica humana), produzido pelo embrião logo após a implantação no endométrio. Por isso o teste só funciona alguns dias após a fecundação!'
+    },
+    {
+      p: 'Qual é a função da placenta?',
+      ops: ['Produzir o líquido amniótico', 'Fazer a troca de nutrientes, O₂ e CO₂ entre mãe e feto', 'Ser o local onde ocorre a fecundação', 'Armazenar o hCG'],
+      c: 1,
+      exp: 'A PLACENTA é a "ponte" entre mãe e feto! Leva oxigênio e nutrientes da mãe pro bebê, e traz de volta o CO₂ e resíduos. Tudo pelo cordão umbilical!'
+    },
+    {
+      p: 'As etapas do parto, em ordem, são:',
+      ops: ['Expulsão → Dilatação → Dequitação', 'Dilatação → Expulsão → Dequitação', 'Dequitação → Dilatação → Expulsão', 'Dilatação → Dequitação → Expulsão'],
+      c: 1,
+      exp: '1. DILATAÇÃO (colo do útero abre) → 2. EXPULSÃO (bebê nasce!) → 3. DEQUITAÇÃO (saída da placenta). Macete: "Deu Expulsão Depois" 🍼'
+    },
+    {
+      p: 'Gêmeos que se originam de UM único zigoto que se divide são chamados de:',
+      ops: ['Dizigóticos (fraternos)', 'Monozigóticos (idênticos)', 'Trigêmeos', 'Dizigóticos (idênticos)'],
+      c: 1,
+      exp: 'MONOZIGÓTICOS = MONO (1) zigoto que se divide em 2! Por isso são idênticos — mesmo DNA, mesmo sexo sempre! Os dizigóticos (DI = 2) vêm de 2 zigotos diferentes.'
+    }
+  ]
+},
+
+// ======= TOPICO 5 =======
+{
+  id: 5,
+  emoji: '🌱',
+  cor: '#7B1FA2',
+  titulo: 'Puberdade',
+  conteudo: `
+    <div class="card">
+      <h2 style="color:#ce93d8">🌱 O que é a Puberdade?</h2>
+      <p>A puberdade é a passagem da <strong>infância para a vida adulta</strong>. O corpo passa por mudanças físicas, emocionais e hormonais para se tornar capaz de se reproduzir.</p>
+      <div class="destaque-box">
+        <strong>🧠 Como funciona?</strong>
+        Hipófise (glândula no cérebro) → produz FSH e LH → estimulam ovários (♀) e testículos (♂) → produzem hormônios sexuais → mudanças no corpo!
+      </div>
+    </div>
+    <div class="card">
+      <h2 style="color:#ce93d8">⚡ Mudanças na Puberdade</h2>
+      <div class="mini-grid">
+        <div class="mini-card" style="border-top:3px solid #1976d2">
+          <strong>👦 Meninos — Testosterona</strong>
+          • Pelos (rosto, axilas, púbis)<br>
+          • Voz grave<br>
+          • Desenvolvimento muscular<br>
+          • Pênis e testículos crescem<br>
+          • Início da espermatogênese<br>
+          • Acne / polução noturna
+        </div>
+        <div class="mini-card" style="border-top:3px solid #c62828">
+          <strong>👧 Meninas — Estrógeno</strong>
+          • Desenvolvimento das mamas<br>
+          • Quadril arredonda<br>
+          • Pelos (axilas, púbis)<br>
+          • Menarca (1ª menstruação)<br>
+          • Crescimento em altura<br>
+          • Acne
+        </div>
+      </div>
+      <div class="destaque-box amarelo">
+        <strong>⚠️ Atenção — cai na prova!</strong>
+        Crescimento de pelos nas axilas e região púbica ocorre em <strong>AMBOS os sexos</strong>!<br>
+        Voz grossa = só meninos. Menarca = só meninas.
+      </div>
+    </div>
+    <div class="card">
+      <h2 style="color:#ce93d8">🦋 Glândula Tireoide</h2>
+      <p>A <strong>tireoide</strong> fica no pescoço e produz hormônios que regulam o <strong>metabolismo</strong> (o ritmo do corpo). Falta de iodo → pode causar <strong>bócio</strong>.</p>
+      <div class="destaque-box">
+        <strong>💡 MACETE rápido:</strong>
+        Testosterona → <strong>T</strong> de Testículo (meninos)<br>
+        Estrógeno → <strong>E</strong> de Ela (meninas)<br>
+        Progesterona → "Pro-gestação" = prepara pra gravidez
+      </div>
+    </div>
+  `,
+  questoes: [
+    {
+      p: 'Qual hormônio é responsável pelas mudanças da puberdade nos MENINOS?',
+      ops: ['Estrógeno', 'Progesterona', 'Testosterona', 'hCG'],
+      c: 2,
+      exp: 'A TESTOSTERONA, produzida pelos testículos, é o hormônio masculino responsável por: pelos, voz grave, músculos, crescimento do pênis e início da produção de espermatozoides!'
+    },
+    {
+      p: 'Qual mudança da puberdade acontece em AMBOS os sexos (meninos E meninas)?',
+      ops: ['Desenvolvimento das mamas', 'Voz que fica mais grave', 'Crescimento de pelos nas axilas e púbis', 'Menarca (primeira menstruação)'],
+      c: 2,
+      exp: 'O crescimento de pelos nas axilas e região púbica acontece nos DOIS! Voz grave e espermatogênese = só meninos. Mamas e menarca = só meninas.'
+    },
+    {
+      p: 'Qual glândula, localizada no cérebro, "manda" os sinais para as gônadas produzirem hormônios sexuais?',
+      ops: ['Tireoide', 'Pâncreas', 'Hipófise', 'Suprarrenal'],
+      c: 2,
+      exp: 'A HIPÓFISE (ou pituitária), na base do cérebro, é a "chefe"! Ela produz FSH e LH que mandam estímulos para ovários e testículos funcionarem.'
+    },
+    {
+      p: 'A "menarca" é:',
+      ops: ['O último ciclo menstrual da vida', 'A primeira menstruação da vida', 'O nome científico do ovário', 'O início da ovulação nos meninos'],
+      c: 1,
+      exp: 'MENARCA = primeira menstruação! É um marco da puberdade feminina, indicando que os ovários começaram a funcionar. Dica: "men-arca" = início do ciclo menstrual!'
+    }
+  ]
+},
+
+// ======= TOPICO 6 =======
+{
+  id: 6,
+  emoji: '🛡️',
+  cor: '#006064',
+  titulo: 'Métodos Contraceptivos',
+  conteudo: `
+    <div class="card">
+      <h2 style="color:#4dd0e1">🛡️ O que são?</h2>
+      <p>Métodos contraceptivos são formas de <strong>evitar a gravidez não planejada</strong>. Cada um funciona de forma diferente!</p>
+      <div class="destaque-box vermelho">
+        <strong>🚨 REGRA DE OURO — cai SEMPRE na prova:</strong>
+        O <strong>preservativo</strong> (masculino ou feminino) é o <strong>ÚNICO</strong> método que também protege contra as ISTs!<br>
+        Todos os outros evitam gravidez, mas NÃO protegem contra doenças sexualmente transmissíveis.
+      </div>
+    </div>
+    <div class="card">
+      <h2 style="color:#4dd0e1">📋 Tipos de Métodos</h2>
+      <div class="tabela-scroll">
+        <table>
+          <tr><th>Método</th><th>Tipo</th><th>IST?</th></tr>
+          <tr><td>🧦 Camisinha (masc/fem)</td><td>Barreira</td><td>✅ SIM</td></tr>
+          <tr><td>⭕ Diafragma</td><td>Barreira</td><td>❌ Não</td></tr>
+          <tr><td>💊 Pílula</td><td>Hormonal</td><td>❌ Não</td></tr>
+          <tr><td>🩹 Adesivo hormonal</td><td>Hormonal</td><td>❌ Não</td></tr>
+          <tr><td>💉 Implante / Injeção</td><td>Hormonal</td><td>❌ Não</td></tr>
+          <tr><td>🔱 DIU</td><td>Mecânico/Hormonal</td><td>❌ Não</td></tr>
+          <tr><td>📅 Tabelinha</td><td>Comportamental</td><td>❌ Não</td></tr>
+          <tr><td>✂️ Laqueadura</td><td>Cirúrgico (definitivo)</td><td>❌ Não</td></tr>
+          <tr><td>✂️ Vasectomia</td><td>Cirúrgico (definitivo)</td><td>❌ Não</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <h2 style="color:#4dd0e1">🔍 Detalhes Importantes</h2>
+      <div class="mini-grid">
+        <div class="mini-card"><strong>💊 Pílula</strong>Hormônios que impedem a ovulação. Tomada todo dia.</div>
+        <div class="mini-card"><strong>🔱 DIU</strong>Inserido DENTRO do útero por médico. Cobre ou hormonal.</div>
+        <div class="mini-card"><strong>✂️ Laqueadura</strong>Cirurgia feminina: corta/liga as TUBAS UTERINAS. Definitivo.</div>
+        <div class="mini-card"><strong>✂️ Vasectomia</strong>Cirurgia masculina: corta o DUCTO DEFERENTE. Definitivo.</div>
+      </div>
+      <div class="destaque-box amarelo">
+        <strong>🧠 MACETE Laqueadura × Vasectomia:</strong>
+        <strong>L</strong>aqueadura → <strong>L</strong>adinho (mulher, ligação das tubas)<br>
+        <strong>V</strong>asectomia → <strong>V</strong>ai cortar o ducto (homem)
+      </div>
+    </div>
+  `,
+  questoes: [
+    {
+      p: 'Qual é o ÚNICO método contraceptivo que também protege contra as ISTs?',
+      ops: ['Pílula anticoncepcional', 'DIU', 'Preservativo (camisinha)', 'Diafragma'],
+      c: 2,
+      exp: 'O PRESERVATIVO cria uma barreira física que impede o contato com fluidos corporais (sêmen, secreções). Por isso é o único que protege contra ISTs! A pílula e o DIU são ótimos contraceptivos mas não têm essa proteção.'
+    },
+    {
+      p: 'A laqueadura é uma cirurgia que:',
+      ops: ['Corta o ducto deferente do homem', 'Liga/corta as tubas uterinas da mulher', 'Remove os ovários', 'Insere um DIU no útero'],
+      c: 1,
+      exp: 'LAQUEADURA = cirurgia feminina que corta ou liga as TUBAS UTERINAS, impedindo que o óvulo chegue ao útero. É definitivo!\nVasectomia = cirurgia masculina (corta o ducto deferente).'
+    },
+    {
+      p: 'Por que a tabelinha (abstinência periódica) é considerada pouco confiável?',
+      ops: ['Porque usa hormônios perigosos', 'Porque precisa ser aplicada por médico', 'Porque depende do ciclo ser regular, o que nem sempre ocorre', 'Porque é um método definitivo'],
+      c: 2,
+      exp: 'A tabelinha calcula os dias férteis pelo calendário. O problema: o ciclo pode variar por estresse, doença, etc. Dias férteis imprevisíveis = método pouco confiável!'
+    },
+    {
+      p: 'O DIU (Dispositivo Intrauterino) é:',
+      ops: ['Uma pílula tomada após a relação', 'Um dispositivo inserido dentro do útero por médico', 'Um adesivo colado na pele', 'Uma cirurgia definitiva'],
+      c: 1,
+      exp: 'O DIU é um dispositivo pequeno inserido DENTRO DO ÚTERO por um médico. Pode ser de cobre (mecânico) ou hormonal (libera progesterona). Dura anos mas pode ser removido!'
+    }
+  ]
+},
+
+// ======= TOPICO 7 =======
+{
+  id: 7,
+  emoji: '💗',
+  cor: '#C62828',
+  titulo: 'Sexualidade e ISTs',
+  conteudo: `
+    <div class="card">
+      <h2 style="color:#f48fb1">💗 O que é Sexualidade?</h2>
+      <p>Sexualidade <strong>vai muito além do ato sexual</strong>! Envolve emoções, identidade, valores, cultura e relações interpessoais ao longo de toda a vida.</p>
+      <div class="mini-grid">
+        <div class="mini-card"><strong>🧪 Dopamina</strong>Sensação de prazer e recompensa na paixão</div>
+        <div class="mini-card"><strong>😊 Serotonina</strong>Hormônio do bem-estar</div>
+        <div class="mini-card"><strong>🤝 Ocitocina</strong>"Hormônio do amor" — ligação afetiva</div>
+        <div class="mini-card"><strong>⚡ Adrenalina</strong>Coração acelera quando você está apaixonado!</div>
+      </div>
+    </div>
+    <div class="card">
+      <h2 style="color:#f48fb1">✋ Consentimento e Respeito</h2>
+      <p>Toda relação sexual precisa de <strong>consentimento livre e consciente</strong> de todas as pessoas envolvidas.</p>
+      <div class="destaque-box vermelho">
+        <strong>⚖️ Assédio sexual é CRIME!</strong>
+        Lei nº 13.718 — "Achei que ela queria" NÃO é desculpa.<br>
+        Sem consentimento = crime, ponto final!
+      </div>
+      <p>Respeitar as diferenças de identidade e orientação sexual é obrigatório. Discriminação é crime no Brasil.</p>
+    </div>
+    <div class="card">
+      <h2 style="color:#f48fb1">🦠 ISTs — Infecções Sexualmente Transmissíveis</h2>
+      <div class="destaque-box vermelho">
+        <strong>🛡️ Prevenção: PRESERVATIVO é o único método que protege!</strong>
+      </div>
+      <div class="tabela-scroll">
+        <table>
+          <tr><th>IST</th><th>Causa</th><th>Característica</th></tr>
+          <tr><td>HIV/AIDS</td><td>Vírus</td><td>Ataca o sistema imunológico</td></tr>
+          <tr><td>Gonorreia</td><td>Bactéria</td><td>Corrimento e dor</td></tr>
+          <tr><td>Sífilis</td><td>Bactéria</td><td>Fases progressivas — trata logo!</td></tr>
+          <tr><td>HPV</td><td>Vírus</td><td>Verrugas; ligado ao câncer de colo do útero</td></tr>
+          <tr><td>Herpes</td><td>Vírus</td><td>Feridas recorrentes</td></tr>
+        </table>
+      </div>
+      <div class="destaque-box amarelo">
+        <strong>🧠 MACETE das ISTs:</strong>
+        H G S H H<br>
+        <strong>H</strong>IV · <strong>G</strong>onorreia · <strong>S</strong>ífilis · <strong>H</strong>PV · <strong>H</strong>erpes
+      </div>
+    </div>
+  `,
+  questoes: [
+    {
+      p: 'Sexualidade é um conceito que envolve APENAS o ato sexual. Isso é:',
+      ops: ['Verdadeiro, é exclusivamente biológico', 'Falso — envolve emoções, identidade, valores, cultura e relações', 'Verdadeiro, se refere só à reprodução', 'Falso — existe apenas na fase adulta'],
+      c: 1,
+      exp: 'FALSO! Sexualidade é muito mais ampla — envolve sentimentos, quem você é, sua cultura, seus valores e como você se relaciona com outras pessoas. Vai muito além do ato sexual!'
+    },
+    {
+      p: 'O assédio sexual é tipificado como crime pela Lei nº:',
+      ops: ['15.100', '9.610', '13.718', '5.700'],
+      c: 2,
+      exp: 'LEI Nº 13.718! Assédio sexual é crime no Brasil. "Achei que ela queria" não é justificativa nem desculpa. Sem consentimento = crime, simples assim!'
+    },
+    {
+      p: 'Para prevenir ISTs (infecções sexualmente transmissíveis), o método mais eficaz é:',
+      ops: ['Pílula anticoncepcional', 'DIU hormonal', 'Preservativo (camisinha)', 'Tabelinha'],
+      c: 2,
+      exp: 'O PRESERVATIVO cria uma barreira física que impede o contato com fluidos corporais onde os vírus e bactérias das ISTs estão. É o único método que previne tanto a gravidez quanto as ISTs!'
+    },
+    {
+      p: 'Qual das ISTs é causada por um vírus e pode ser relacionada ao câncer de colo do útero?',
+      ops: ['Gonorreia', 'Sífilis', 'HPV', 'Herpes'],
+      c: 2,
+      exp: 'O HPV (Papilomavírus Humano) é um vírus que pode causar verrugas genitais e, em alguns casos, está relacionado ao câncer de colo do útero. Por isso a vacina contra HPV é tão importante!'
+    }
+  ]
+}
+]; // fim topicos
+
+// ===========================
+// VARIÁVEIS DE ESTADO
+// ===========================
+let topicoAtual = 0;
+let questaoAtual = 0;
+let acertosTopico = 0;
+let acertosTotal = 0;
+let totalQuestoesTotal = 0;
+let tentativasQuestao = 0;
+let respondeuCorreto = false;
+let topicosCompletos = [];
+
+const msgErro = [
+  { emoji: '😅', titulo: 'Quase lá!', texto: 'Não foi dessa vez... Dá uma olhada no conteúdo ali em cima e tenta de novo! Você consegue!' },
+  { emoji: '🤔', titulo: 'Hmm...', texto: 'Pensa bem! A resposta está no resumo que você acabou de ler. Relê aquela parte e tenta de novo!' },
+  { emoji: '😬', titulo: 'Opa!', texto: 'Essa não era! Mas sem pânico — tenta de novo que você chega lá!' },
+  { emoji: '💪', titulo: 'Não desiste!', texto: 'Errar faz parte do aprendizado! Tenta mais uma vez — você vai acertar!' },
+  { emoji: '🙈', titulo: 'Eita!', texto: 'Não era essa... Respira fundo, relê a explicação do conteúdo e vai na próxima tentativa!' },
+  { emoji: '🎯', titulo: 'Quase no alvo!', texto: 'Mas não acertou dessa vez! Concentra e tenta de novo!' },
+];
+
+const msgAcerto = [
+  { emoji: '🎉', titulo: 'ISSO AÍ!', texto: 'Você mandou muito bem! Resposta certíssima!' },
+  { emoji: '🏆', titulo: 'ARRASOOOOU!', texto: 'Perfeito! Você está dominando esse conteúdo!' },
+  { emoji: '⚡', titulo: 'CERTÍSSIMO!', texto: 'Você está voando nesse conteúdo! Continua assim!' },
+  { emoji: '🌟', titulo: 'EXCELENTE!', texto: 'Que resposta linda! Você sabe muito disso aí!' },
+  { emoji: '🚀', titulo: 'ACERTOU!', texto: 'Boa demais! Pode ir pra próxima questão!' },
+];
+
+// ===========================
+// FUNÇÕES
+// ===========================
+function iniciar() {
+  document.getElementById('tela-inicio').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  mostrarTopico(0);
+}
+
+function voltarInicio() {
+  document.getElementById('tela-inicio').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('tela-quiz').style.display = 'none';
+  document.getElementById('tela-resultado-topico').style.display = 'none';
+  document.getElementById('tela-final').style.display = 'none';
+}
+
+function mostrarTopico(index) {
+  topicoAtual = index;
+  const t = topicos[index];
+
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('tela-quiz').style.display = 'none';
+  document.getElementById('tela-resultado-topico').style.display = 'none';
+
+  document.getElementById('topo-subtitulo').textContent = `Assunto ${index + 1} de ${topicos.length}`;
+  document.getElementById('topo-titulo').textContent = t.emoji + ' ' + t.titulo;
+  document.getElementById('topo-progresso').textContent = `${index + 1}/${topicos.length}`;
+
+  const pct = (index / topicos.length) * 100;
+  document.getElementById('barra-progresso').style.width = pct + '%';
+
+  const conteudo = document.getElementById('conteudo-topico');
+  conteudo.innerHTML = t.conteudo + `
+    <div style="text-align:center;padding:10px 0 30px;">
+      <p style="color:#aaa;font-size:0.85em;margin-bottom:12px;">Leu tudo? Hora de testar o que aprendeu!</p>
+      <button class="btn-quiz" onclick="iniciarQuiz(${index})">📝 Fazer o Quiz — ${t.titulo}</button>
+    </div>
+  `;
+  conteudo.scrollTop = 0;
+  window.scrollTo(0, 0);
+}
+
+function voltarConteudo() {
+  document.getElementById('tela-quiz').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  mostrarTopico(topicoAtual);
+}
+
+function iniciarQuiz(topicoIndex) {
+  topicoAtual = topicoIndex;
+  questaoAtual = 0;
+  acertosTopico = 0;
+  tentativasQuestao = 0;
+  respondeuCorreto = false;
+
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('tela-quiz').style.display = 'flex';
+
+  const t = topicos[topicoIndex];
+  document.getElementById('quiz-topico-nome').textContent = t.emoji + ' ' + t.titulo;
+  mostrarQuestao();
+}
+
+function mostrarQuestao() {
+  const t = topicos[topicoAtual];
+  const q = t.questoes[questaoAtual];
+  const total = t.questoes.length;
+
+  tentativasQuestao = 0;
+  respondeuCorreto = false;
+
+  document.getElementById('quiz-titulo-topo').textContent = `Questão ${questaoAtual + 1} de ${total}`;
+  document.getElementById('quiz-progresso').textContent = `${questaoAtual + 1}/${total}`;
+  document.getElementById('quiz-barra').style.width = ((questaoAtual / total) * 100) + '%';
+  document.getElementById('quiz-num').textContent = `Questão ${questaoAtual + 1}`;
+  document.getElementById('quiz-pergunta').textContent = q.p;
+
+  // Limpar feedback
+  const fb = document.getElementById('quiz-feedback');
+  fb.className = 'feedback';
+  document.getElementById('btn-tentar').style.display = 'none';
+  document.getElementById('btn-prox').style.display = 'none';
+
+  // Montar opções
+  const opcoes = document.getElementById('quiz-opcoes');
+  const letras = ['A', 'B', 'C', 'D'];
+  opcoes.innerHTML = '';
+  q.ops.forEach((op, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opcao';
+    btn.innerHTML = `<span class="letra">${letras[i]}</span><span>${op}</span>`;
+    btn.onclick = () => verificarResposta(i, btn);
+    opcoes.appendChild(btn);
+  });
+}
+
+function verificarResposta(index, btnClicado) {
+  const t = topicos[topicoAtual];
+  const q = t.questoes[questaoAtual];
+  const opcoes = document.querySelectorAll('.opcao');
+  const fb = document.getElementById('quiz-feedback');
+
+  // Desativa tudo momentaneamente
+  opcoes.forEach(o => o.classList.add('desativada'));
+
+  if (index === q.c) {
+    // ACERTOU
+    respondeuCorreto = true;
+    acertosTopico++;
+    acertosTotal++;
+    btnClicado.classList.remove('desativada');
+    btnClicado.classList.add('certa');
+
+    const msg = msgAcerto[Math.floor(Math.random() * msgAcerto.length)];
+    document.getElementById('fb-emoji').textContent = msg.emoji;
+    document.getElementById('fb-titulo').textContent = msg.titulo;
+    document.getElementById('fb-texto').textContent = '💡 ' + q.exp;
+    document.getElementById('btn-tentar').style.display = 'none';
+    document.getElementById('btn-prox').style.display = 'inline-block';
+    fb.className = 'feedback certo';
+
+  } else {
+    // ERROU
+    tentativasQuestao++;
+    btnClicado.classList.remove('desativada');
+    btnClicado.classList.add('errada');
+
+    const msg = msgErro[Math.floor(Math.random() * msgErro.length)];
+    document.getElementById('fb-emoji').textContent = msg.emoji;
+    document.getElementById('fb-titulo').textContent = msg.titulo;
+    document.getElementById('fb-texto').textContent = msg.texto;
+    document.getElementById('btn-tentar').style.display = 'inline-block';
+    document.getElementById('btn-prox').style.display = 'none';
+    fb.className = 'feedback errado';
+
+    // Reativa as outras após 600ms
+    setTimeout(() => {
+      opcoes.forEach(o => {
+        if (!o.classList.contains('errada')) o.classList.remove('desativada');
+      });
+    }, 600);
+  }
+}
+
+function tentarNovamente() {
+  const opcoes = document.querySelectorAll('.opcao');
+  const fb = document.getElementById('quiz-feedback');
+  fb.className = 'feedback';
+
+  opcoes.forEach(o => {
+    o.classList.remove('errada', 'desativada', 'certa');
+    o.onclick = function() { verificarResposta(parseInt(this.getAttribute('data-i')), this); };
+  });
+
+  // Reatribuir índices
+  opcoes.forEach((o, i) => {
+    o.classList.remove('errada', 'desativada');
+    o.onclick = () => verificarResposta(i, o);
+  });
+}
+
+function proximaQuestao() {
+  const t = topicos[topicoAtual];
+  questaoAtual++;
+
+  if (questaoAtual >= t.questoes.length) {
+    mostrarResultadoTopico();
+  } else {
+    mostrarQuestao();
+    window.scrollTo(0, 0);
+  }
+}
+
+function mostrarResultadoTopico() {
+  document.getElementById('tela-quiz').style.display = 'none';
+  document.getElementById('tela-resultado-topico').style.display = 'flex';
+
+  const t = topicos[topicoAtual];
+  const total = t.questoes.length;
+  const pct = (acertosTopico / total) * 100;
+
+  topicosCompletos.push(topicoAtual);
+  totalQuestoesTotal += total;
+
+  // Emoji e mensagem baseados na porcentagem
+  let emoji, titulo, msg, corBarra;
+  if (pct === 100) {
+    emoji = '🏆'; titulo = 'PERFEITO!'; msg = 'Você acertou TUDO! Está arrasando! 🔥'; corBarra = '#ffd700';
+  } else if (pct >= 75) {
+    emoji = '🎉'; titulo = 'MUITO BEM!'; msg = 'Ótimo desempenho! Está dominando o conteúdo!'; corBarra = '#43a047';
+  } else if (pct >= 50) {
+    emoji = '💪'; titulo = 'BOA TENTATIVA!'; msg = 'Mais da metade certa! Revisa aquele conteúdo e vai bem na prova!'; corBarra = '#fb8c00';
+  } else {
+    emoji = '📚'; titulo = 'PRECISA REVISAR!'; msg = 'Volte ao conteúdo e leia novamente antes da prova, ok?'; corBarra = '#e53935';
+  }
+
+  // Estrelas
+  let estrelas = pct === 100 ? '⭐⭐⭐' : pct >= 75 ? '⭐⭐' : '⭐';
+
+  document.getElementById('res-emoji').textContent = emoji;
+  document.getElementById('res-titulo').textContent = titulo;
+  document.getElementById('res-score').textContent = `${acertosTopico} de ${total} acertos`;
+  document.getElementById('res-estrelas').textContent = estrelas;
+  document.getElementById('res-msg').textContent = msg;
+  document.getElementById('res-barra').style.background = corBarra;
+
+  setTimeout(() => {
+    document.getElementById('res-barra').style.width = pct + '%';
+  }, 100);
+
+  // Botão continuar
+  const btnCont = document.getElementById('btn-continuar');
+  if (topicoAtual + 1 >= topicos.length) {
+    btnCont.textContent = '🏁 Ver resultado final!';
+  } else {
+    btnCont.textContent = `Próximo: ${topicos[topicoAtual + 1].emoji} ${topicos[topicoAtual + 1].titulo} →`;
+  }
+}
+
+function proximoTopico() {
+  if (topicoAtual + 1 >= topicos.length) {
+    mostrarFinal();
+  } else {
+    mostrarTopico(topicoAtual + 1);
+    document.getElementById('tela-resultado-topico').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+  }
+}
+
+function mostrarFinal() {
+  document.getElementById('tela-resultado-topico').style.display = 'none';
+  document.getElementById('tela-final').style.display = 'flex';
+
+  const pct = (acertosTotal / totalQuestoesTotal) * 100;
+  document.getElementById('final-score').textContent = `${acertosTotal}/${totalQuestoesTotal}`;
+
+  let estrelas, msg;
+  if (pct === 100) {
+    estrelas = '⭐⭐⭐'; msg = '100%! Você ZEROU! Pode ir pra prova de cabeça erguida! 🏆🔥';
+  } else if (pct >= 80) {
+    estrelas = '⭐⭐⭐'; msg = 'Excelente! Você está muito preparado para a prova! 💪';
+  } else if (pct >= 60) {
+    estrelas = '⭐⭐'; msg = 'Bom desempenho! Revisa os tópicos que errou e vai bem! 📚';
+  } else {
+    estrelas = '⭐'; msg = 'Precisa estudar mais um pouco! Reinicia e tenta de novo! 💪';
+  }
+
+  document.getElementById('final-estrelas').textContent = estrelas;
+  document.getElementById('final-msg').textContent = msg;
+}
+
+function reiniciar() {
+  acertosTotal = 0;
+  totalQuestoesTotal = 0;
+  topicosCompletos = [];
+  iniciar();
+  mostrarTopico(0);
+}
+</script>
+</body>
+</html>

@@ -29,9 +29,11 @@
   #tela-inicio h1 { font-size: 1.8em; background: linear-gradient(135deg, #a78bfa, #60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
   #tela-inicio p { color: #aaa; margin-bottom: 30px; font-size: 0.95em; }
   .topicos-lista { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
-  .topico-item { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; text-align: left; }
+  .topico-item { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; text-align: left; cursor: pointer; transition: all 0.2s; width: 100%; font-family: inherit; color: #eee; }
+  .topico-item:hover, .topico-item:active { background: rgba(106,17,203,0.25); border-color: var(--roxo-claro); transform: scale(0.99); }
   .topico-item .num { background: var(--roxo); color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 0.8em; font-weight: bold; flex-shrink: 0; }
   .topico-item span { font-size: 0.9em; }
+  .inicio-ou { color: #666; font-size: 0.8em; margin: 8px 0 4px; text-align: center; }
   .btn-start { background: linear-gradient(135deg, var(--roxo), var(--azul)); color: white; border: none; padding: 16px 40px; border-radius: 50px; font-size: 1.1em; font-weight: bold; cursor: pointer; width: 100%; max-width: 300px; transition: transform 0.15s, box-shadow 0.15s; box-shadow: 0 4px 20px rgba(106,17,203,0.4); }
   .btn-start:active { transform: scale(0.97); }
 
@@ -153,17 +155,19 @@
   <h1>Ciências · 2ª Prova</h1>
   <p>Estuda o conteúdo e responde o quiz de cada assunto!</p>
 
-  <div class="topicos-lista">
-    <div class="topico-item"><div class="num">1</div><span>👦 Sistema Genital Masculino</span></div>
-    <div class="topico-item"><div class="num">2</div><span>👧 Sistema Genital Feminino</span></div>
-    <div class="topico-item"><div class="num">3</div><span>📅 Ciclo Menstrual e Hormônios</span></div>
-    <div class="topico-item"><div class="num">4</div><span>🤰 Gravidez e Parto</span></div>
-    <div class="topico-item"><div class="num">5</div><span>🌱 Puberdade</span></div>
-    <div class="topico-item"><div class="num">6</div><span>🛡️ Métodos Contraceptivos</span></div>
-    <div class="topico-item"><div class="num">7</div><span>💗 Sexualidade e ISTs</span></div>
-  </div>
+  <button class="btn-start" onclick="iniciar()">🚀 COMEÇAR DO INÍCIO</button>
 
-  <button class="btn-start" onclick="iniciar()">🚀 COMEÇAR AGORA</button>
+  <p class="inicio-ou">— ou escolha um assunto —</p>
+
+  <div class="topicos-lista">
+    <button class="topico-item" onclick="irParaTopico(0)"><div class="num">1</div><span>👦 Sistema Genital Masculino</span></button>
+    <button class="topico-item" onclick="irParaTopico(1)"><div class="num">2</div><span>👧 Sistema Genital Feminino</span></button>
+    <button class="topico-item" onclick="irParaTopico(2)"><div class="num">3</div><span>📅 Ciclo Menstrual e Hormônios</span></button>
+    <button class="topico-item" onclick="irParaTopico(3)"><div class="num">4</div><span>🤰 Gravidez e Parto</span></button>
+    <button class="topico-item" onclick="irParaTopico(4)"><div class="num">5</div><span>🌱 Puberdade</span></button>
+    <button class="topico-item" onclick="irParaTopico(5)"><div class="num">6</div><span>🛡️ Métodos Contraceptivos</span></button>
+    <button class="topico-item" onclick="irParaTopico(6)"><div class="num">7</div><span>💗 Sexualidade e ISTs</span></button>
+  </div>
 </div>
 
 <!-- ===== APP PRINCIPAL ===== -->
@@ -853,6 +857,15 @@ function iniciar() {
   document.getElementById('tela-inicio').style.display = 'none';
   document.getElementById('app').style.display = 'flex';
   mostrarTopico(0);
+}
+
+function irParaTopico(index) {
+  document.getElementById('tela-inicio').style.display = 'none';
+  document.getElementById('tela-quiz').style.display = 'none';
+  document.getElementById('tela-resultado-topico').style.display = 'none';
+  document.getElementById('tela-final').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  mostrarTopico(index);
 }
 
 function voltarInicio() {
